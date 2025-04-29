@@ -1,0 +1,29 @@
+{
+  "name": "hyperloop-tc-project",
+  "version": "1.0.0",
+  "description": "Project of HyperLoop UPV Training Center for software subsystem",
+  "homepage": "https://github.com/JavierRibaldelRio/HyperLoop-TC-Project#readme",
+  "bugs": {
+    "url": "https://github.com/JavierRibaldelRio/HyperLoop-TC-Project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JavierRibaldelRio/HyperLoop-TC-Project.git"
+  },
+  "license": "ISC",
+  "author": "Javier Ribal del Río",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
