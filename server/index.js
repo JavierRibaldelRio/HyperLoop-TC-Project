@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
-import { WebSocketServer } from "ws";
 
+import { setupWebSocketServer } from "./sockets/websocket.js"; // Import the WebSocket server setup function
 
 const PORT = process.env.PORT || 3001; // Port for the server
 
@@ -9,31 +9,10 @@ const PORT = process.env.PORT || 3001; // Port for the server
 const app = express();                          // Express server
 const server = http.createServer(app);          // HTTP server above Express server
 
-// Creation of the WebSocket
-const wss = new WebSocketServer({ server });
 
-// WebSocket: gestión de conexiones
-wss.on('connection', (ws, req) => {
-    console.log('🔌 Cliente WebSocket conectado');
+// WebSocket server
+setupWebSocketServer(server);
 
-    // Responder a mensajes entrantes
-    ws.on('message', (message) => {
-        console.log('📩 Mensaje recibido:', message.toString());
-
-        // Ejemplo: Eco (responder el mismo mensaje al cliente)
-        ws.send(`Echo: ${message}`);
-    });
-
-    // Manejar cierre de conexión
-    ws.on('close', () => {
-        console.log('🔴 Cliente WebSocket desconectado');
-    });
-
-    // Manejar errores
-    ws.on('error', (error) => {
-        console.error('⚠️ Error en WebSocket:', error);
-    });
-});
 
 
 // Starting the WebSocket server
