@@ -1,62 +1,83 @@
 import { EventEmitter } from 'events';
+import {
+    MAX_ELEVATION,
+    MIN_ELEVATION,
+    MAX_CURRENT,
+    MAX_SYSTEM_VOLTAGE,
+    PRECHARGE_RATE,
+    DISCHARGE_RATE,
+    FALL_RATE,
+    Kp,
+    STABILITY_THRESHOLD,
+    PERTURBATION_PROBABILITY,
+    MACHINE_STATES,
+    TARGET_DISTANCE_DEFAULT
+} from '../constants.js';
+
 
 const trainEvents = new EventEmitter();
 
-let machineState = 'idle'; // 'idle' | 'precharging' | 'charged' | 'adjusting' | 'running' | 'stopping'
+let machineState = MACHINE_STATES.IDLE;
 
 let currentState = {
-    elevation: 0,        // mm
+    elevation: 0,        // cm
     voltage: 0,          // V
     current: 0,          // A
-    targetElevation: 15, // mm — can change dynamically
+    targetElevation: TARGET_DISTANCE_DEFAULT, // mm
 };
 
-export function setMachineState(newState, elevation = 15) {
-
-
+export function setMachineState(newState, elevation = TARGET_DISTANCE_DEFAULT) {
     switch (newState) {
-
-        case 'precharging':
-            if (machineState !== 'idle') {
-                return `Cannot transition to precharging from ${machineState}`;
+        case MACHINE_STATES.PRECHARGING:
+            if (machineState !== MACHINE_STATES.IDLE) {
+                return { type: "error", message: `Cannot transition to precharging from ${machineState}` };
             }
             break;
-        case 'adjusting':
-            if (machineState !== 'charged') {
-                return `Cannot transition to adjusting from ${machineState}`;
-            }
-
-            else if (machineState === 'running' || machineState === 'adjusting') {
-                return `Machine is already adjusting or running`;
-            }
-            break;
-
-        case 'stopping':
-            if (machineState === 'idle') {
-                return `Cannot transition to stopping from ${machineState}`;
-            }
-
-            else if (machineState === 'stopping') {
-                return `Machine is already stopping`;
+        case MACHINE_STATES.ADJUSTING:
+            if (machineState !== MACHINE_STATES.CHARGED) {
+                return { type: "error", message: `Cannot transition to adjusting from ${machineState}` };
+            } else if (
+                machineState === MACHINE_STATES.RUNNING ||
+                machineState === MACHINE_STATES.ADJUSTING
+            ) {
+                return { type: "error", message: `Machine is already adjusting or running` };
             }
             break;
-
+        case MACHINE_STATES.STOPPING:
+            if (machineState === MACHINE_STATES.IDLE) {
+                return { type: "error", message: `Cannot transition to stopping from ${machineState}` };
+            } else if (machineState === MACHINE_STATES.STOPPING) {
+                return { type: "error", message: `Machine is already stopping` };
+            }
+            break;
     }
 
-    // Changes the current data
 
-    const res = `Transitioning from ${machineState} to ${newState}` + (currentState.targetElevation !== elevation ? ` with new target elevation ${elevation}` : '') + '.';
+
+
+    const res_message = `Transitioning from ${machineState} to ${newState}` +
+        (currentState.targetElevation !== elevation
+            ? ` with new target elevation ${elevation}`
+            : '') +
+        '.';
 
     machineState = newState;
     currentState.targetElevation = elevation;
 
-    return res;
 
-
+    return { type: "response", message: res_message };
 }
 
 export function setTargetElevation(newTarget) {
-    currentState.targetElevation = Math.max(0, Math.min(25, newTarget));
+
+    if (newTarget < MIN_ELEVATION || newTarget > MAX_ELEVATION) {
+        return { message: `Target elevation ${newTarget} is out of bounds (${MIN_ELEVATION}, ${MAX_ELEVATION})`, type: 'error' };
+    }
+    else {
+        currentState.targetElevation = newTarget;
+
+        return { message: `Target elevation set to ${newTarget}`, type: 'response' };
+    }
 }
 
 export function getCurrentState() {
@@ -67,35 +88,24 @@ export function onTrainUpdate(callback) {
     trainEvents.on('update', callback);
 }
 
-// Constants
-const MAX_ELEVATION = 25;
-const MAX_CURRENT = 20;
-const MAX_SYSTEM_VOLTAGE = 400;
-const PRECHARGE_RATE = 10;
-const DISCHARGE_RATE = 20;
-const FALL_RATE = 5;
-const Kp = 1.2;
-const STABILITY_THRESHOLD = 0.5;
-const PERTURBATION_PROBABILITY = 0.05;
-
 function simulateStep() {
     switch (machineState) {
-        case 'idle':
+        case MACHINE_STATES.IDLE:
             currentState = { elevation: 0, voltage: 0, current: 0, targetElevation: currentState.targetElevation };
             break;
 
-        case 'precharging':
+        case MACHINE_STATES.PRECHARGING:
             currentState.voltage = Math.min(currentState.voltage + PRECHARGE_RATE, MAX_SYSTEM_VOLTAGE);
             if (currentState.voltage >= MAX_SYSTEM_VOLTAGE) {
-                machineState = 'charged';
+                machineState = MACHINE_STATES.CHARGED;
             }
             break;
 
-        case 'charged':
+        case MACHINE_STATES.CHARGED:
             currentState = { elevation: 0, voltage: MAX_SYSTEM_VOLTAGE, current: 0, targetElevation: currentState.targetElevation };
             break;
 
-        case 'adjusting': {
+        case MACHINE_STATES.ADJUSTING: {
             const error = currentState.targetElevation - currentState.elevation;
 
             const currentTarget = Math.max(-MAX_CURRENT, Math.min(MAX_CURRENT, Kp * error));
@@ -109,12 +119,12 @@ function simulateStep() {
             currentState.current = currentTarget;
 
             if (Math.abs(error) < STABILITY_THRESHOLD) {
-                machineState = 'running';
+                machineState = MACHINE_STATES.RUNNING;
             }
             break;
         }
 
-        case 'running': {
+        case MACHINE_STATES.RUNNING: {
             if (Math.random() < PERTURBATION_PROBABILITY) {
                 const deviation = (Math.random() - 0.5) * 2;
                 currentState.elevation = Math.max(0, Math.min(MAX_ELEVATION, currentState.elevation + deviation));
@@ -126,18 +136,18 @@ function simulateStep() {
             currentState.voltage = MAX_SYSTEM_VOLTAGE;
 
             if (Math.abs(error) >= STABILITY_THRESHOLD) {
-                machineState = 'adjusting';
+                machineState = MACHINE_STATES.ADJUSTING;
             }
             break;
         }
 
-        case 'stopping':
+        case MACHINE_STATES.STOPPING:
             currentState.voltage = Math.max(0, currentState.voltage - DISCHARGE_RATE);
             currentState.elevation = Math.max(0, currentState.elevation - FALL_RATE);
             currentState.current = 0;
 
             if (currentState.voltage <= 0 && currentState.elevation <= 0) {
-                machineState = 'idle';
+                machineState = MACHINE_STATES.IDLE;
             }
             break;
 
@@ -148,4 +158,11 @@ function simulateStep() {
     trainEvents.emit('update', getCurrentState());
 }
 
-setInterval(simulateStep, 100);
+
+export default function startSimulation() {
+    setMachineState(MACHINE_STATES.IDLE);
+    currentState = { elevation: 0, voltage: 0, current: 0, targetElevation: TARGET_DISTANCE_DEFAULT };
+
+    // Simulate every 100ms
+    setInterval(simulateStep, 100);
+}

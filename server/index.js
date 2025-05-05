@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 
+import startSimulation from "./app/services/levitationService.js";
 import { setupWebSocketServer } from "./sockets/websocket.js"; // Import the WebSocket server setup function
 
 const PORT = process.env.PORT || 3001; // Port for the server
@@ -9,6 +10,9 @@ const PORT = process.env.PORT || 3001; // Port for the server
 const app = express();                          // Express server
 const server = http.createServer(app);          // HTTP server above Express server
 
+
+// Start the simulation
+startSimulation();
 
 // WebSocket server
 setupWebSocketServer(server);

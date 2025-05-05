@@ -1,6 +1,7 @@
 // server/sockets/websocket.js
 import { WebSocketServer, WebSocket } from 'ws';
-import { getCurrentState, setMachineState } from '../app/services/levitationService.js';
+import { getCurrentState, setMachineState, setTargetElevation } from '../app/services/levitationService.js';
+import { response } from 'express';
 
 export function setupWebSocketServer(server) {
     const wss = new WebSocketServer({ server });
@@ -12,8 +13,6 @@ export function setupWebSocketServer(server) {
         // Recibir mensajes de cliente
         ws.on('message', (raw) => {
 
-            console.log(raw)
-
             let packet;
             try {
                 packet = JSON.parse(raw);
@@ -22,16 +21,46 @@ export function setupWebSocketServer(server) {
                 return;
             }
 
-            if (packet.type === 'setState') {
-                const { newState, elevation } = packet;
-                const res = setMachineState(newState, elevation);
-                console.log(res);
-
-                ws.send(JSON.stringify({
-                    type: 'response',
-                    message: res,
-                }));
+            if (packet.type === undefined) {
+                console.error('The packet does not have a type:', raw);
+                return;
             }
+
+            // Validar el paquete, en función de los paquetes que puede recibir
+
+            let response;
+            switch (packet.type) {
+
+                // Al pulsar un botón.
+                case 'setState':
+                    const { newState, elevation } = packet;
+                    response = setMachineState(newState, elevation);
+
+                    response.operation = 'setState';
+                    break;
+
+                // Al cambiar el input de la elevación
+                case 'setElevation':
+                    response = setTargetElevation(packet.elevation);
+
+                    response.operation = 'setElevation';
+
+                    break;
+
+                default:
+                    console.error('Unknown packet type:', packet.type);
+                    response = {
+                        type: 'error',
+                        message: `Unknown packet type: ${packet.type}`,
+                    };
+                    break;
+
+
+
+
+            }
+
+            ws.send(JSON.stringify(response));
 
         });
 
@@ -51,7 +80,7 @@ export function setupWebSocketServer(server) {
         const fullState = getCurrentState();
 
         const packet = {
-            id: 'data',
+            operation: 'status update',
             ts: Date.now(),
             data: {
                 elevation: fullState.elevation,
@@ -63,7 +92,6 @@ export function setupWebSocketServer(server) {
         };
 
 
-        console.log('packet :>> ', packet);
         const serialized = JSON.stringify(packet);
 
         for (const client of wss.clients) {
