@@ -1,4 +1,5 @@
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { GalleryVerticalEnd } from "lucide-react"
 
 import {
     Sidebar,
@@ -6,9 +7,11 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar"
 
 // Menu items.
@@ -41,8 +44,56 @@ const items = [
 ]
 
 export function AppSidebar() {
+
+    // Stores whether the bar is collapsed or not
+    const { state } = useSidebar();
+
+
+    let hLLogo;
+
+    if (state === "collapsed") {
+
+        hLLogo =
+
+            <img
+                style={{ "marginLeft": "-15px" }}
+                src="Logo-HL.svg"
+                alt="Logo HyperLoop UPV"
+                className=" object-contain scale-50"
+            />
+
+    }
+    else {
+
+        hLLogo = <img
+            src="Logo-HL.svg"
+            alt="Logo HyperLoop UPV"
+            className="object-contain w-auto h-12"
+        />
+
+    }
+
     return (
-        <Sidebar>
+        <Sidebar collapsible="icon">
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size="lg" asChild>
+                            <a href="#">
+                                <div style={{ "backgroundColor": "#171717" }} className="flex aspect-square size-12 items-center justify-center rounded-lg 
+                                 ">
+
+                                    {hLLogo}
+
+                                </div>
+                                <div className="flex flex-col gap-0.5 leading-none">
+                                    <span className="font-semibold">Banca de Levitación</span>
+                                </div>
+                            </a>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
