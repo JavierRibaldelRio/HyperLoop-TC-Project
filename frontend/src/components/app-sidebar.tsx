@@ -1,6 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { GalleryVerticalEnd } from "lucide-react"
-
+import { Calendar, Inbox, Search, Settings, CircleGauge } from "lucide-react"
+import { Link } from "react-router-dom";
 import {
     Sidebar,
     SidebarContent,
@@ -17,18 +16,18 @@ import {
 // Menu items.
 const items = [
     {
-        title: "Home",
-        url: "#",
-        icon: Home,
+        title: "Dashboard",
+        url: "/",
+        icon: CircleGauge,
     },
     {
         title: "Inbox",
-        url: "#",
+        url: "/about",
         icon: Inbox,
     },
     {
         title: "Calendar",
-        url: "#",
+        url: "/dashboard",
         icon: Calendar,
     },
     {
@@ -74,7 +73,7 @@ export function AppSidebar() {
     }
 
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon"  >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -102,10 +101,15 @@ export function AppSidebar() {
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </a>
+
+                                        <Link to={item.url}>
+
+                                            <>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </>
+                                        </Link>
+
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

@@ -34,7 +34,7 @@ export function setupWebSocketServer(server) {
                 // Al pulsar un botón.
                 case 'setState':
                     const { newState, elevation } = packet;
-                    response = setMachineState(newState, elevation);
+                    response = setMachineState(newState);
 
                     response.operation = 'setState';
                     break;
@@ -93,13 +93,14 @@ export function setupWebSocketServer(server) {
 
 
         const serialized = JSON.stringify(packet);
+        console.log('serialized :>> ', serialized);
 
         for (const client of wss.clients) {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(serialized);
             }
         }
-    }, 2000);
+    }, 500);
 
     // Opcional: limpiar el intervalo cuando el servidor se cierre
     server.on('close', () => {
