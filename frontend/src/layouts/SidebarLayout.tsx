@@ -1,26 +1,18 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 
-const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
-    const location = useLocation();
+function SidebarLayout({ children }: { children: React.ReactNode }) {
 
+    console.log(' :>> ',);
     return (
-        <div className="flex h-screen">
-            <aside className="w-64 bg-gray-100 p-4 border-r">
-                <Card className={`mb-2 ${location.pathname === "/" ? "bg-gray-200" : ""}`}>
-                    <Link to="/">Home</Link>
-                </Card>
-                <Card className={`mb-2 ${location.pathname === "/about" ? "bg-gray-200" : ""}`}>
-                    <Link to="/about">About</Link>
-                </Card>
-                <Card className={`mb-2 ${location.pathname === "/dashboard" ? "bg-gray-200" : ""}`}>
-                    <Link to="/dashboard">Dashboard</Link>
-                </Card>
-            </aside>
-            <main className="flex-1 p-6 overflow-y-auto">{children}</main>
-        </div>
-    );
-};
+        <SidebarProvider>
+            <AppSidebar />
+            <main>
+                <SidebarTrigger />
+                {children}
+            </main>
+        </SidebarProvider>
+    )
+}
 
-export default SidebarLayout;
+export default SidebarLayout
