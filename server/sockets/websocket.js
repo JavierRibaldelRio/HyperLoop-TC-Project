@@ -92,7 +92,6 @@ export function setupWebSocketServer(server) {
 
 
         const serialized = JSON.stringify(packet);
-        console.log('serialized :>> ', serialized);
 
         for (const client of wss.clients) {
             if (client.readyState === WebSocket.OPEN) {
