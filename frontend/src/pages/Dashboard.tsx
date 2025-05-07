@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import useWebSocket from '@/hooks/useWebSocket';
-import { Button } from "@/components/ui/button";
 
 import { StatsDisplay } from '@/components/dashboard/StatsDisplay';
 import type { Logs } from '@/lib/types';

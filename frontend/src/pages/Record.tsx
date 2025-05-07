@@ -12,7 +12,6 @@ const Record: React.FC = () => {
     const { message, send } = useWebSocket("ws://localhost:3001");
 
     const [logs, setLogs] = React.useState<Logs[]>([]);
-    const [messages, setMessages] = React.useState<string[]>([]);
     const [isRecording, setIsRecording] = useState(false);
     const [recordedLogs, setRecordedLogs] = useState<Logs[]>([]);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -28,8 +27,6 @@ const Record: React.FC = () => {
             if (messageData.operation === "status update") {
                 const log: Logs = messageData;
                 setLogs((prevLogs) => [...prevLogs, log]);
-            } else {
-                setMessages((prevMessages) => [...prevMessages, String(message[message.length - 1])]);
             }
         } catch (error) {
             console.error("Error parsing message:", error, message);
