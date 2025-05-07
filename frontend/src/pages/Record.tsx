@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver'; // Importación corregida
 const Record: React.FC = () => {
 
     // WebSocket connection to the server
-    const { message, send } = useWebSocket("ws://localhost:3001/ws");
+    const { message, send } = useWebSocket("/ws");
 
     const [logs, setLogs] = React.useState<Logs[]>([]);
     const [isRecording, setIsRecording] = useState(false);

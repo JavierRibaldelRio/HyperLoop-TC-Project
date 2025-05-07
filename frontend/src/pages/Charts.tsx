@@ -4,7 +4,7 @@ import LiveChart from '@/components/charts/livechart';
 import type { Logs } from '@/lib/types';
 
 const Charts: React.FC = () => {
-    const { message } = useWebSocket("ws://localhost:3001/ws");
+    const { message } = useWebSocket("/ws");
     const [logs, setLogs] = useState<Logs[]>([]);
 
     useEffect(() => {
