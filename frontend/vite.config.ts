@@ -11,4 +11,17 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/ws": {
+        target: "http://localhost:3001",
+        ws: true, // Habilitar WebSocket proxy
+        changeOrigin: true,
+      },
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+    },
+  },
 })

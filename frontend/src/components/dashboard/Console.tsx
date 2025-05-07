@@ -12,11 +12,13 @@ const Consola: React.FC<{ messages: string[] }> = ({ messages }) => {
     }, [messages]);
 
     return (
-        <Card className="mx-auto h-64 w-[80%]">
-            <CardHeader>
+        <Card className="h-65 col sm:col-span-1 flex flex-col p-2">
+            {/* Cabecera fija con flex */}
+            <CardHeader className="flex-none mt-4">
                 <CardTitle>Console</CardTitle>
             </CardHeader>
-            <CardContent className="overflow-y-auto" ref={consoleEndRef}>
+            {/* Contenido desplazable */}
+            <CardContent className="flex-1 overflow-y-auto border border-gray-300 rounded-md p-2" ref={consoleEndRef}>
                 <div className="flex flex-col gap-2">
                     {messages.length > 0 ? (
                         messages.map((message, index) => (
@@ -30,7 +32,6 @@ const Consola: React.FC<{ messages: string[] }> = ({ messages }) => {
                     ) : (
                         <p className="text-muted-foreground">No messages available</p>
                     )}
-
                 </div>
             </CardContent>
         </Card>

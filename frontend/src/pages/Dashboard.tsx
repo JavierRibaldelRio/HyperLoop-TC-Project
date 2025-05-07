@@ -5,6 +5,7 @@ import { StatsDisplay } from '@/components/dashboard/StatsDisplay';
 import type { Logs } from '@/lib/types';
 import SelectionTable from '@/components/dashboard/SelectionTable';
 import Consola from '@/components/dashboard/Console';
+import Figure from '@/components/Figure';
 
 const Dashboard: React.FC = () => {
 
@@ -53,7 +54,7 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full w-full flex-col gap-4  md:gap-6  p-0">
+        <div className="flex h-full w-full flex-col gap-4 md:gap-6 p-0">
             <div className="flex flex-1 flex-col m-0 p-0">
                 <div className="@container/main flex flex-1 flex-col gap-2 m-0 p-0">
                     <div className="flex flex-col gap-4 py-4 md:gap-3 md:py-3 m-0 p-0">
@@ -64,7 +65,20 @@ const Dashboard: React.FC = () => {
 
             <SelectionTable latestData={logs} />
 
-            <Consola messages={messages} />
+            {/* Consola y Figure utilizando el grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 px-4 lg:px-6 w-full mx-auto">
+                <div className="col-span-3">
+                    <Consola messages={messages} />
+                </div>
+
+                <Figure
+                    minDistance={0}
+                    maxDistance={100}
+                    currentDistance={logs.length > 0 ? logs[logs.length - 1]?.data?.elevation || 0 : 0}
+                />
+            </div>
+
+
         </div>
     );
 };
