@@ -1,10 +1,9 @@
 // server/sockets/websocket.js
 import { WebSocketServer, WebSocket } from 'ws';
 import { getCurrentState, setMachineState, setTargetElevation } from '../app/services/levitationService.js';
-import { response } from 'express';
 
 export function setupWebSocketServer(server) {
-    const wss = new WebSocketServer({ server });
+    const wss = new WebSocketServer({ server, path: '/ws' });
 
     // Gestión de nuevas conexiones
     wss.on('connection', (ws, req) => {

@@ -34,7 +34,7 @@ const ControlButtons: React.FC<ControlButtonsProps> = ({ handleClick, targetElev
             </div>
             <div className="flex items-center gap-2">
                 <label htmlFor="elevation" className="text-sm font-medium">
-                    Elevación objetivo:
+                    Target Elevation (cm):
                 </label>
                 <input
                     id="elevation"
