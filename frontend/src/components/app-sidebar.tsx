@@ -1,8 +1,9 @@
-import { Calendar, Inbox, Search, Settings, CircleGauge } from "lucide-react"
+import { CircleGauge, ChartBar, Circle } from "lucide-react"
 import { Link } from "react-router-dom";
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -12,6 +13,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "./mode-toggle";
 
 // Menu items.
 const items = [
@@ -21,25 +23,15 @@ const items = [
         icon: CircleGauge,
     },
     {
-        title: "Inbox",
-        url: "/about",
-        icon: Inbox,
+        title: "Charts",
+        url: "/charts",
+        icon: ChartBar,
     },
     {
-        title: "Calendar",
-        url: "/dashboard",
-        icon: Calendar,
-    },
-    {
-        title: "Search",
-        url: "#",
-        icon: Search,
-    },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-    },
+        title: "Record",
+        url: "/record",
+        icon: Circle,
+    }
 ]
 
 export function AppSidebar() {
@@ -117,6 +109,9 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <ModeToggle />
+            </SidebarFooter>
         </Sidebar>
     )
 }

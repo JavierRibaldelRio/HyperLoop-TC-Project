@@ -3,8 +3,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 import SidebarLayout from "./layouts/SidebarLayout";
 
-import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
+import Charts from "./pages/Charts";
+import Record from "./pages/Record";
 
 function App() {
   return (
@@ -14,7 +15,10 @@ function App() {
         <SidebarLayout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/charts" element={<Charts />} />
+            <Route path="/record" element={<Record />} />
+            {/* Add more routes as needed */}
           </Routes>
         </SidebarLayout>
       </BrowserRouter>

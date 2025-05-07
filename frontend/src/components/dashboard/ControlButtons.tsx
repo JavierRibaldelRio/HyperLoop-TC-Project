@@ -20,7 +20,7 @@ const ControlButtons: React.FC<ControlButtonsProps> = ({ handleClick, targetElev
                     Precharge <BatteryCharging className="h-4 w-4" />
                 </Button>
                 <Button
-                    onClick={() => handleClick("running", targetElevation)}
+                    onClick={() => handleClick("adjusting", targetElevation)}
                     className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"
                 >
                     Start <PlayCircle className="h-4 w-4" />
