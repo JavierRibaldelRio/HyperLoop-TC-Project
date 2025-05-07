@@ -1,4 +1,4 @@
-import { CircleGauge, ChartBar, Circle } from "lucide-react"
+import { CircleGauge, ChartBar, Circle, UserRound } from "lucide-react"
 import { Link } from "react-router-dom";
 import {
     Sidebar,
@@ -31,6 +31,11 @@ const items = [
         title: "Record",
         url: "/record",
         icon: Circle,
+    },
+    {
+        title: "About",
+        url: "/about",
+        icon: UserRound,
     }
 ]
 

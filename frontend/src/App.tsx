@@ -6,6 +6,7 @@ import SidebarLayout from "./layouts/SidebarLayout";
 import Dashboard from "./pages/Dashboard";
 import Charts from "./pages/Charts";
 import Record from "./pages/Record";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/charts" element={<Charts />} />
             <Route path="/record" element={<Record />} />
-            {/* Add more routes as needed */}
+            <Route path="*" element={<Dashboard />} />
+
+            <Route path="/about" element={<About />} />
           </Routes>
         </SidebarLayout>
       </BrowserRouter>
