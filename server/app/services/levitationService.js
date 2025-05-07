@@ -23,10 +23,13 @@ let currentState = {
     elevation: 0,        // cm
     voltage: 0,          // V
     current: 0,          // A
-    targetElevation: TARGET_DISTANCE_DEFAULT, // mm
+    targetElevation: TARGET_DISTANCE_DEFAULT, // cm
 };
 
-export function setMachineState(newState, elevation = TARGET_DISTANCE_DEFAULT) {
+
+
+export function setMachineState(newState) {
+
     switch (newState) {
         case MACHINE_STATES.PRECHARGING:
             if (machineState !== MACHINE_STATES.IDLE) {
@@ -52,18 +55,9 @@ export function setMachineState(newState, elevation = TARGET_DISTANCE_DEFAULT) {
             break;
     }
 
-
-
-
-    const res_message = `Transitioning from ${machineState} to ${newState}` +
-        (currentState.targetElevation !== elevation
-            ? ` with new target elevation ${elevation}`
-            : '') +
-        '.';
+    const res_message = `Transitioning from ${machineState} to ${newState}.`;
 
     machineState = newState;
-    currentState.targetElevation = elevation;
-
 
     return { type: "response", message: res_message };
 }
