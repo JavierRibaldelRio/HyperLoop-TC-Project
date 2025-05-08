@@ -98,7 +98,7 @@ export function setupWebSocketServer(server) {
                 client.send(serialized);
             }
         }
-    }, 500);
+    }, 250);
 
     // Opcional: limpiar el intervalo cuando el servidor se cierre
     server.on('close', () => {
