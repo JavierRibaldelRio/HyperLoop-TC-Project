@@ -5,4 +5,5 @@ export type Data = { elevation: number; voltage: number; current: number, target
 export type Logs =
     { operation: "status update", phase: Phase, data: Data, ts: number }
 
-
+export type Message =
+    { operation: string, type: string, message: string, ts: number };

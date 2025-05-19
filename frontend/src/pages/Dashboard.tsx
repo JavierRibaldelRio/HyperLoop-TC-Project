@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import useWebSocket from '@/hooks/useWebSocket';
 
+
+// Components
 import { StatsDisplay } from '@/components/dashboard/StatsDisplay';
-import type { Logs } from '@/lib/types';
+import type { Logs, Message } from '@/lib/types';
 import SelectionTable from '@/components/dashboard/SelectionTable';
 import Consola from '@/components/dashboard/Console';
 import Figure from '@/components/Figure';
@@ -13,7 +15,7 @@ const Dashboard: React.FC = () => {
     const { message, send } = useWebSocket("/ws");
 
     const [logs, setLogs] = React.useState<Logs[]>([]);
-    const [messages, setMessages] = React.useState<string[]>([]);
+    const [messages, setMessages] = React.useState<Message[]>([]);
 
     // Handle incoming messages
     useEffect(() => {
@@ -22,17 +24,25 @@ const Dashboard: React.FC = () => {
         try {
             const messageData: any = JSON.parse(String(message[message.length - 1]));
 
+            console.log('messageData :>> ', messageData);
+            // If the message is a status update, update the data
             if (messageData.operation === "status update") {
                 const log: Logs = messageData;
                 setLogs((prevLogs) => [...prevLogs, log]);
-            } else {
-                setMessages((prevMessages) => [...prevMessages, String(message[message.length - 1])]);
+            }
+
+            // If the message is a status message, update the messages at console
+            else {
+                setMessages((prevMessages) => [
+                    ...prevMessages, messageData
+                ]);
             }
         } catch (error) {
             console.error("Error parsing message:", error, message);
         }
     }, [message]);
 
+    // Function to handle button clicks for setting state 
     const handleClick = (state: string, elevation: number) => {
         const packet = {
             type: 'setState',
@@ -42,6 +52,7 @@ const Dashboard: React.FC = () => {
         send(JSON.stringify(packet));
     };
 
+    // Function to handle target levitation change
     const handleTargetLevitation = (targetElevation: number) => {
         if (targetElevation < 0) {
             console.error("Target elevation cannot be negative.");
@@ -49,8 +60,6 @@ const Dashboard: React.FC = () => {
         }
 
         send(JSON.stringify({ type: 'setElevation', elevation: targetElevation }));
-        console.log(`Setting target elevation to ${targetElevation} cm.`);
-        // Additional logic to handle target elevation can be added here
     };
 
     return (
