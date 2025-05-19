@@ -18,9 +18,7 @@ startSimulation();
 // WebSocket server
 setupWebSocketServer(server);
 
-// Frontend
-
-
+// Frontend static files
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/", express.static(path.resolve(__dirname, '../frontend/dist')));
