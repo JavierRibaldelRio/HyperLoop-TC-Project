@@ -26,7 +26,6 @@ export function setupWebSocketServer(server) {
             }
 
             // Validar el paquete, en función de los paquetes que puede recibir
-
             let response;
             switch (packet.type) {
 
@@ -54,10 +53,9 @@ export function setupWebSocketServer(server) {
                     };
                     break;
 
-
-
-
             }
+
+            response.ts = Date.now();
 
             ws.send(JSON.stringify(response));
 
